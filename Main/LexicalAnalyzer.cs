@@ -1,111 +1,28 @@
-﻿using static BisayaC.ErrorHandler;
-using static BisayaC.ErrorHandler.ErrorCode;
+﻿using static BisayaC.ErrorStatements;
+using static BisayaC.ErrorStatements.ErrorType;
 
-namespace BisayaC
+namespace LexicalAnalyzer
 {
-    /// <summary>
-    /// Enumerates the types of tokens that can be produced.
-    /// </summary>
     public enum TokenType
     {
-        // Code Blocks
-        SUGOD,              // Start of program
-        KATAPUSAN,          // End of program
-        SUGODKUNG,          // '{' - Start block
-        HUMANKUNG,          // '}' - End block
-        PUNDOK,             // Group a block of codes
-
-        // Data Types
-        NUMERO,             // Integer (no decimal)
-        LETRA,              // Character
-        TINUOD,             // Boolean
-        TIPIK,              // Floating point
-        PULONG,             // String
-
-        // Literals
-        IDENTIFIER,         // Variable names etc.
-        INTEGERLITERAL,     // e.g. 5
-        STRINGLITERAL,      // e.g. "Hello, World!"
-        CHARACTERLITERAL,   // e.g. 'n'
-        OO,                 // Boolean true literal
-        DILI,               // Boolean false literal & "NOT" operator
-        FLOATLITERAL,       // e.g. 3.14
-
-        // Operators
-        ASAYNMENT,          // '='
-        DUGANG,             // '+'
-        KUHA,               // '-'
-        PADAGHAN,           // '*'
-        BAHIN,              // '/'
-        SOBRA,              // '%'
-        LABAW,              // '>'
-        UBOS,               // '<'
-        LABAWSA,            // '>='
-        UBOSSA,             // '<='
-        PAREHAS,            // '=='
-        LAHI,               // '<>'
-        UG,                 // Logical AND
-        O,                  // Logical OR
-        SUMPAY,             // '&' (concatenation)
-
-        // Delimiters
-        SUNODLINYA,         // Newline or '$'
-        STORYA,             // Comment delimiter
-        DUHATULDOK,         // ':'
-        KAMA,               // ','
-        ABLIKUTOB,          // '('
-        SIRAKUTOB,          // ')'
-        ABLIPAHID,          // '[' - Start escape sequence
-        SIRAPAHID,          // ']' - End escape sequence
-
-        // Keywords
-        MUGNA,              // Declaration
-        KUNG,               // If
-        WALA,               // Else (if not)
-        ALANG,              // For-loop keyword
-        SA,                 // For-loop part 2
-        SAMTANG,            // While
-        IPAKITA,            // Display/output
-        DAWAT,              // Input/scan
-
-        // Special and Additional
-        UNKNOWN,            // Unrecognized token
-        EOF,                // End of File
-        PI,                 // 3.14159
-        INCREMENT,          // ++
-        MODASSIGNMENT,      // %=
-        ADDASSIGNMENT,      // +=
-        SUBASSIGNMENT,      // -=
-        MULASSIGNMENT,      // *=
-        DIVASSIGNMENT       // /=
+        SUGOD, KATAPUSAN, SUGODKUNG, HUMANKUNG, PUNDOK, NUMERO, LETRA, TIPIK, PULONG, INTEGERLITERAL,     
+        STRINGLITERAL, CHARACTERLITERAL,   
+        OO, DILI, FLOATLITERAL, ASAYNMENT, DUGANG, SOBRA, LABAW, UBOS, LABAWSA, UBOSSA, PAREHAS, LAHI,               
+        UG, O,TINUOD,KUHA,PADAGHAN,BAHIN,                
+        SUMPAY, SUNODLINYA, STORYA, DUHATULDOK, KAMA, ABLIKUTOB, SIRAKUTOB, MUGNA, KUNG, WALA, ALANG, SA,                 
+        SAMTANG, IPAKITA, DAWAT, UNKNOWN, EOF, PI, INCREMENT, 
+        MODASSIGNMENT, ADDASSIGNMENT, SUBASSIGNMENT, MULASSIGNMENT, DIVASSIGNMENT,IDENTIFIER       
     }
-
-    /// <summary>
-    /// Represents a token produced during lexical analysis.
-    /// </summary>
+    
     public class Token
     {
-        /// <summary>
-        /// Gets the token type.
-        /// </summary>
         public TokenType Type { get; }
 
-        /// <summary>
-        /// Gets the token's string value.
-        /// </summary>
         public string Value { get; }
 
-        /// <summary>
-        /// Gets the line number where the token appears.
-        /// </summary>
-        public int Line { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Token"/> class.
-        /// </summary>
-        /// <param name="type">The token type.</param>
-        /// <param name="value">The token value.</param>
-        /// <param name="line">The line number.</param>
+        public int Line { get; }
+        
         public Token(TokenType type, string value, int line)
         {
             Type = type;
@@ -113,19 +30,13 @@ namespace BisayaC
             Line = line;
         }
     }
-
-    /// <summary>
-    /// Provides methods to tokenize Bisaya++ source code.
-    /// </summary>
-    public static class Lexer
+    
+    public static class LexerAnalyzer
     {
         private static int _index = 0;
         private static int _line = 1;
         private static string? _code;
-
-        /// <summary>
-        /// A dictionary of reserved keywords and their corresponding token types.
-        /// </summary>
+        
         public static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
         {
             {"SUGOD", TokenType.SUGOD},
@@ -149,22 +60,12 @@ namespace BisayaC
             {"O", TokenType.O},
             {"OO", TokenType.OO},
         };
-
-        /// <summary>
-        /// Gets the current source code ensuring it is not null.
-        /// </summary>
+        
         private static string Code => _code ?? throw new InvalidOperationException("_code is null");
 
-        /// <summary>
-        /// Gets the current character in the code.
-        /// </summary>
-        private static char CurrentChar => Code[_index];
 
-        /// <summary>
-        /// Tokenizes the provided source code.
-        /// </summary>
-        /// <param name="code">The Bisaya++ source code.</param>
-        /// <returns>A list of tokens representing the source code.</returns>
+        private static char CurrentChar => Code[_index];
+        
         public static List<Token> Tokenize(string code)
         {
             _code = code;
@@ -268,23 +169,14 @@ namespace BisayaC
         }
 
         #region HELPER METHODS
-
-        /// <summary>
-        /// Handles comment tokens by skipping characters until the end of the line.
-        /// </summary>
-        /// <returns>A newline token representing the end of the comment.</returns>
+        
         private static Token HandleComment()
         {
             SkipComment();
             _line++;
             return new Token(TokenType.SUNODLINYA, "\\n", _line - 1);
         }
-
-        /// <summary>
-        /// Handles operator tokens based on the current character.
-        /// </summary>
-        /// <param name="currentChar">The current operator character.</param>
-        /// <returns>The token corresponding to the operator.</returns>
+        
         private static Token HandleOperator(char currentChar)
         {
             switch (currentChar)
@@ -320,11 +212,6 @@ namespace BisayaC
             }
         }
 
-        /// <summary>
-        /// Handles delimiter tokens based on the current character.
-        /// </summary>
-        /// <param name="currentChar">The current delimiter character.</param>
-        /// <returns>The token corresponding to the delimiter.</returns>
         private static Token HandleDelimiter(char currentChar)
         {
             switch (currentChar)
@@ -348,9 +235,7 @@ namespace BisayaC
             }
         }
 
-        /// <summary>
-        /// Scans a number and returns a token representing either an integer or a floating-point literal.
-        /// </summary>
+
         private static Token FloatOrInteger()
         {
             string number = "";
@@ -377,9 +262,7 @@ namespace BisayaC
                 : new Token(TokenType.INTEGERLITERAL, number, _line);
         }
 
-        /// <summary>
-        /// Skips characters until the end of the current comment.
-        /// </summary>
+
         private static void SkipComment()
         {
             while (_index < Code.Length && CurrentChar != '\n')
@@ -392,9 +275,7 @@ namespace BisayaC
             }
         }
 
-        /// <summary>
-        /// Scans an escape sequence enclosed in square brackets and returns it as a string literal token.
-        /// </summary>
+
         private static Token ScanEscape()
         {
             int start = _index + 1;
@@ -425,50 +306,43 @@ namespace BisayaC
 
             if (lastClosedBracket == -1)
             {
-                RaiseError(_line, Generic, "Unterminated escape sequence");
+                ThrowError(_line, General, "Unterminated escape sequence");
             }
 
             string content = Code[start..lastClosedBracket];
             return new Token(TokenType.STRINGLITERAL, content, _line);
         }
-
-        /// <summary>
-        /// Scans a character literal and returns the corresponding token.
-        /// </summary>
+        
         private static Token ScanCharacter()
         {
             if (Code[_index + 2] != '\'')
             {
                 if (Code[_index + 1] == '\'')
                 {
-                    RaiseError(_line, Generic, "Empty character literal.");
+                    ThrowError(_line, General, "Empty character literal.");
                 }
-                RaiseError(_line, Generic, "Invalid or unterminated character literal.");
+                ThrowError(_line, General, "Invalid or unterminated character literal.");
             }
-            _index++; // Skip the opening quote
+            _index++; 
             string character = Code.Substring(_index, 1);
-            _index += 2; // Skip the character and the closing quote
+            _index += 2;
             return new Token(TokenType.CHARACTERLITERAL, character, _line);
         }
-
-        /// <summary>
-        /// Scans a string literal and returns the corresponding token.
-        /// </summary>
+        
         private static Token ScanString()
         {
             int start = _index;
-            _index++; // Skip the opening quote
+            _index++; 
             while (_index < Code.Length && CurrentChar != '"')
             {
                 _index++;
             }
             if (_index == Code.Length)
             {
-                RaiseError(_line, Generic, "Unterminated string literal.");
+                ThrowError(_line, General, "Unterminated string literal.");
             }
-            _index++; // Skip the closing quote
+            _index++;
             string str = Code[(start + 1)..(_index - 1)];
-            // If the string contains boolean indicators, return the corresponding token.
             if (str.Contains("OO") || str.Contains("DILI"))
             {
                 return str.Contains("OO")
@@ -477,10 +351,7 @@ namespace BisayaC
             }
             return new Token(TokenType.STRINGLITERAL, str, _line);
         }
-
-        /// <summary>
-        /// Scans an identifier and returns the corresponding token.
-        /// </summary>
+        
         private static Token ScanIdentifier()
         {
             int start = _index;
@@ -495,16 +366,11 @@ namespace BisayaC
             }
             if (value == "DILI")
             {
-                // Return a token with value "NOT" for the reserved keyword "DILI"
                 return new Token(TokenType.DILI, "NOT", _line);
             }
             return new Token(TokenType.IDENTIFIER, value, _line);
         }
-
-        /// <summary>
-        /// Checks adjacent non-whitespace characters to determine a special case.
-        /// </summary>
-        /// <returns>True if a '$' is found before or after the current index; otherwise, false.</returns>
+        
         private static bool ScanNextAndPrev()
         {
             int peekIndexLeft = _index - 1;
@@ -521,12 +387,7 @@ namespace BisayaC
             return (peekIndexLeft >= 0 && Code[peekIndexLeft] == '$') ||
                    (peekIndexRight < Code.Length && Code[peekIndexRight] == '$');
         }
-
-        /// <summary>
-        /// Peeks a character at a given offset from the current index.
-        /// </summary>
-        /// <param name="offset">The offset from the current index.</param>
-        /// <returns>The character at the specified offset, or '\0' if out of bounds.</returns>
+        
         private static char PeekChar(int offset)
         {
             int peekIndex = _index + offset;
@@ -536,12 +397,7 @@ namespace BisayaC
             }
             return Code[peekIndex];
         }
-
-        /// <summary>
-        /// Determines how many characters to advance based on the current operator.
-        /// </summary>
-        /// <param name="currentChar">The current operator character.</param>
-        /// <returns>The number of characters to advance.</returns>
+        
         private static int AddIndex(char currentChar)
         {
             switch (currentChar)

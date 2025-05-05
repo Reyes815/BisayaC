@@ -27,3 +27,32 @@ C:\Users\Rowen\Desktop\BisayaC\Main\obj\Debug\net9.0\refint\Main.dll
 C:\Users\Rowen\Desktop\BisayaC\Main\obj\Debug\net9.0\Main.pdb
 C:\Users\Rowen\Desktop\BisayaC\Main\obj\Debug\net9.0\Main.genruntimeconfig.cache
 C:\Users\Rowen\Desktop\BisayaC\Main\obj\Debug\net9.0\ref\Main.dll
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\appsettings.Development.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\appsettings.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.staticwebassets.endpoints.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.exe
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.deps.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.runtimeconfig.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.dll
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\bin\Debug\net9.0\Main.pdb
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.AssemblyInfoInputs.cache
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.AssemblyInfo.cs
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.csproj.CoreCompileInputs.cache
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.sourcelink.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\scopedcss\bundle\Main.styles.css
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets.development.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets\msbuild.Main.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets\msbuild.Main.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets\msbuild.build.Main.props
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.Main.props
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.Main.props
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\staticwebassets.pack.json
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.dll
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\refint\Main.dll
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.pdb
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\Main.genruntimeconfig.cache
+C:\Users\Nookie Lian\RiderProjects\BisayaC\Main\obj\Debug\net9.0\ref\Main.dll

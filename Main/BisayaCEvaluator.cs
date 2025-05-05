@@ -1,89 +1,58 @@
 ﻿using System.Data;
+using LexicalAnalyzer;
 
 namespace BisayaC
 {
-    public class ExecutionContext
+    public class BisayaCEvaluator
     {
         private readonly Dictionary<string, (object Value, TokenType Type)> variables = new();
-
-        //-----------------------------------------------------------------------------------//
-        //                            EXECUTION CONTEXT CLASS
-        //-----------------------------------------------------------------------------------//
-
-
-        /// Declares a variable in the execution context with a specific type and value.
-        /// name The name of the variable to declare.
-        /// value The value to assign to the variable.
-        /// type The expected type of the variable (e.g., NUMERO, TIPIK).
-        /// lineNumber The line number in the source code where the declaration occurs (used for error reporting).
         public void DeclareVariable(string name, object value, TokenType type, int lineNumber)
         {
-            object typedValue; // Holds the value converted to the specified type.
+            object typedValue;
 
             try
             {
-                // Convert the value to the specified type using a switch expression.
                 typedValue = type switch
                 {
-                    TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber), // Convert to integer.
-                    TokenType.TIPIK => Convert.ToSingle(value), // Convert to float.
-                    TokenType.LETRA => Convert.ToChar(value), // Convert to character.
-                    TokenType.TINUOD => Convert.ToBoolean(value), // Convert to boolean.
-                    _ => value // Default case: keep the value as-is.
+                    TokenType.NUMERO => Interpreter.ConvertToInt(value, lineNumber), TokenType.TIPIK => Convert.ToSingle(value),
+                    TokenType.LETRA => Convert.ToChar(value), TokenType.TINUOD => Convert.ToBoolean(value), 
+                    _ => value 
                 };
-
-                // Store the variable in the dictionary with its name, value, and type.
                 variables[name] = (typedValue, type);
             }
             catch
             {
-                // Handle type mismatch errors.
-                string valueString = InterpreterClass.ConvertToString(value); // Convert the value to a string for error reporting.
-                string actualType = RetrieveType(value)?.ToString() ?? "UNKNOWN"; // Retrieve the actual type of the value or default to "UNKNOWN".
+                string valueString = Interpreter.ConvertToString(value);
+                string actualType = RetrieveType(value)?.ToString() ?? "UNKNOWN";
                 
-                // Throw an exception with a detailed error message.
                 throw new ArgumentException(
                     $"Error at line: {lineNumber}. Type mismatch: Cannot declare '{name}' as {type} with value '{valueString}' type '{actualType}'."
                 );
             }
         }
-
-        /// Retrieves the value of a variable from the execution context.
+        
         public object GetVariable(string name, int lineNumber)
         {
-            // Check if the variable name exists in the 'variables' dictionary.
-            // If it does, retrieve its associated value and return it.
             if (variables.TryGetValue(name, out var variable))
             {
-                return variable.Value; // Return the value of the variable.
+                return variable.Value;
             }
-
-            // If the variable name is not found, check if it is a reserved keyword.
-            // 'Lexer.keywords' is assumed to be a dictionary of reserved keywords.
-            if (Lexer.keywords.TryGetValue(name, out var _type))
+            if (LexicalAnalyzer.LexerAnalyzer.keywords.TryGetValue(name, out var _type))
             {
-                // If the name is a reserved keyword, throw an exception with an error message.
                 throw new ArgumentException($"Error at line: {lineNumber}. Invalid use of reserved keyword '{name}'.");
             }
-
-            // If the variable is neither defined nor a reserved keyword, throw an exception.
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
         
-        /// Sets the value of an existing variable in the execution context.
         public void SetVariable(string name, object value, int lineNumber)
         {
             if (variables.ContainsKey(name))
             {
                 var (existingValue, type) = variables[name];
                 object typedValue;
-                // Attempt to convert the value to the expected type.
-
                 try
                 {
                     typedValue = ConvertToType(value, type, lineNumber);
-                    // Check if the converted value is compatible with the existing variable type.
-                    // If not, throw an exception.
                     if (!IsTypeCompatible(typedValue, type))
                     {
                         throw new InvalidOperationException($"Error at line: {lineNumber}. Incompatible type after conversion.");
@@ -92,7 +61,7 @@ namespace BisayaC
                 }
                 catch
                 {
-                    string valueString = InterpreterClass.ConvertToString(value);
+                    string valueString = Interpreter.ConvertToString(value);
                     string actualType = RetrieveType(value).ToString();
                     throw new ArgumentException($"Error at line: {lineNumber}. Type mismatch: Cannot assign value '{valueString}' type '{actualType}' to '{name}' type {type}.");
                 }
@@ -100,14 +69,12 @@ namespace BisayaC
                 return;
             }
 
-            if (Lexer.keywords.TryGetValue(name, out var _type))
+            if (LexicalAnalyzer.LexerAnalyzer.keywords.TryGetValue(name, out var _type))
             {
                 throw new ArgumentException($"Error at line: {lineNumber}. Invalid use of reserved keyword '{name}'.");
             }
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
-        /// Converts the value to the specified type.
-        /// Typings Manipulations
         private static bool IsTypeCompatible(object value, TokenType type)
         {
             return type switch
@@ -125,22 +92,16 @@ namespace BisayaC
         {
             return value switch
             {
-                int _ => "NUMERO",
-                float _ => "TIPIK",
-                char _ => "LETRA",
-                bool _ => "TINUOD",
-                string _ => "PULONG",
+                int _ => "NUMERO", float _ => "TIPIK", char _ => "LETRA", bool _ => "TINUOD", string _ => "PULONG",
                 _ => value.GetType().Name.ToUpper()
             };
         }
     
-        /// Converts the value to the specified type based on the provided token type.
-        /// This method is used to ensure that the value is of the correct type before assignment.
         private static object ConvertToType(object value, TokenType type, int lineNumber)
         {
             return type switch
             {
-                TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber),
+                TokenType.NUMERO => Interpreter.ConvertToInt(value, lineNumber),
                 TokenType.TIPIK => Convert.ToSingle(value),
                 TokenType.LETRA => Convert.ToChar(value),
                 TokenType.TINUOD => Convert.ToBoolean(value),
@@ -149,26 +110,12 @@ namespace BisayaC
             };
         }
     }
-
-
-
-
-    //-----------------------------------------------------------------------------------//
-    //                            INTERPRETER CLASS
-    //-----------------------------------------------------------------------------------//
-    /// The InterpreterClass is responsible for interpreting and executing the program.
-    /// It processes various types of statements and expressions, handling variable declarations,
-    /// assignments, arithmetic operations, logical operations, and control flow statements.
-    public class InterpreterClass
+    
+    public class Interpreter
     {
-        private readonly ExecutionContext context = new();
-        // The ExecutionContext instance is used to manage the variables and their values during execution.
-        // It provides methods to declare, get, and set variables, ensuring type safety and error handling.
-
+        private readonly BisayaCEvaluator context = new();
         public void Interpret(ProgramNode program)
         {
-            // The Interpret method takes a ProgramNode object as input, which represents the entire program.
-            // It iterates through the statements in the program and executes each one using the ExecuteStatement method.
             try
             {
                 if (program == null || program.Statements == null)
@@ -189,15 +136,11 @@ namespace BisayaC
             }
         }
 
-        /// Executes a single statement based on its type.
-        /// The method uses a switch statement to determine the type of the statement and calls the appropriate handler.
         private void ExecuteStatement(Statement statement)
         {
             switch (statement)
             {
                 case DeclarationStatement decl:
-                    // Handle variable declarations.
-                    // The declaration can include multiple variables, each with an optional initializer.
                     foreach (var variable in decl.Variables)
                     {
                         var value = variable.Initializer != null ? EvaluateExpression(variable.Initializer) : GetDefaultValue(decl.Type);
@@ -205,8 +148,6 @@ namespace BisayaC
                     }
                     break;
                 case AssignmentStatement assign:
-                    // Handle variable assignments.
-                    // The assignment can include an operator (e.g., +=, -=) and a value to assign.
                     var assignValue = EvaluateExpression(assign.Value);
                     var variableValue = context.GetVariable(assign.Variable.Name, assign.LineNumber);
                     if (assign.Operator.Type != TokenType.ASAYNMENT)
@@ -216,13 +157,9 @@ namespace BisayaC
                     context.SetVariable(assign.Variable.Name, assignValue, assign.LineNumber);
                     break;
                 case IncrementStatement increment:
-                    // Handle increment statements.
-                    // The increment statement increases the value of a variable by 1.
                     IncrementVariable(increment.Variable);
                     break;
                 case InputStatement inputStmt:
-                    // Handle input statements.
-                    // The input statement prompts the user for input and assigns it to the specified variables.
                     foreach (var variable in inputStmt.Variables)
                     {
                         var input = Console.ReadLine();
@@ -234,16 +171,12 @@ namespace BisayaC
                     }
                     break;
                 case OutputStatement output:
-                    // Handle output statements.
-                    // The output statement prints the result of evaluating the specified expressions to the console.
                     foreach (var expression in output.Expressions)
                     {
                         Console.Write(ConvertToString(EvaluateExpression(expression)));
                     }
                     break;
                 case IfStatement ifStmt:
-                    // Handle if statements.
-                    // The if statement evaluates a condition and executes the corresponding branch (then or else).
                     bool condition = (bool)EvaluateExpression(ifStmt.Condition);
                     if (condition)
                     {
@@ -261,8 +194,6 @@ namespace BisayaC
                     }
                     break;
                 case ForLoopStatement forLoop:
-                    // Handle for loop statements.
-                    // The for loop consists of initialization, condition, and update expressions.
                     ExecuteStatement(forLoop.Initialization);
 
                     while (IsTruthy(EvaluateExpression(forLoop.Condition)))
@@ -286,8 +217,6 @@ namespace BisayaC
                     }
                     break;
                 case WhileStatement whileStmt:
-                    // Handle while loop statements.
-                    // The while loop continues executing as long as the condition is true.
                     while ((bool)EvaluateExpression(whileStmt.Condition))
                     {
                         foreach (var bodyStmt in whileStmt.Body)
@@ -298,17 +227,12 @@ namespace BisayaC
                     break;
                 case EmptyStatement:
                     Console.WriteLine("Task completed without any errors");
-                    // Handle empty statements (no operation).
-                    // This is a placeholder for statements that do not perform any action.
                     break;
                 default:
                     throw new NotImplementedException($"Error at line: {statement.LineNumber}. Execution not implemented for statement type {statement.GetType().Name}");
             }
         }
 
-
-        /// Evaluates an expression and returns its value.
-        /// The method uses a switch statement to determine the type of the expression and calls the appropriate evaluator.
         private object EvaluateExpression(Expression expression)
         {
             switch (expression)
@@ -348,15 +272,13 @@ namespace BisayaC
 
             left = ConvertIfString(left);
             right = ConvertIfString(right);
-
-            // Handle cases where left or right might be a VariableExpression.
+            
             left = left is VariableExpression leftVar ? context.GetVariable(leftVar.Name, leftVar.LineNumber) : left;
             right = right is VariableExpression rightVar ? context.GetVariable(rightVar.Name, rightVar.LineNumber) : right;
 
             bool isLeftFloat = left is float;
             bool isRightFloat = right is float;
 
-            // Ensure consistency when dealing with doubles.
             if (left is double || right is double)
             {
                 left = Convert.ToSingle(left);
