@@ -10,14 +10,6 @@ namespace Bisaya__
         // Stores variables with their value and declared type.
         private readonly Dictionary<string, (object Value, TokenType Type)> variables = new();
 
-        /// <summary>
-        /// Declares a new variable with a specified type and value.
-        /// </summary>
-        /// <param name="name">The variable name.</param>
-        /// <param name="value">The initial value.</param>
-        /// <param name="type">The declared token type.</param>
-        /// <param name="lineNumber">The line number where the declaration occurs.</param>
-        /// <exception cref="Exception">Thrown when a type conversion fails.</exception>
         public void DeclareVariable(string name, object value, TokenType type, int lineNumber)
         {
             object typedValue;
@@ -42,15 +34,6 @@ namespace Bisaya__
             }
         }
 
-        /// <summary>
-        /// Retrieves the value of a declared variable.
-        /// </summary>
-        /// <param name="name">The variable name.</param>
-        /// <param name="lineNumber">The line number where the variable is requested.</param>
-        /// <returns>The variable's value.</returns>
-        /// <exception cref="Exception">
-        /// Thrown if the variable is not defined or if a reserved keyword is used improperly.
-        /// </exception>
         public object GetVariable(string name, int lineNumber)
         {
             if (variables.TryGetValue(name, out var variable))
@@ -64,16 +47,7 @@ namespace Bisaya__
             }
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
-
-        /// <summary>
-        /// Updates the value of an already declared variable.
-        /// </summary>
-        /// <param name="name">The variable name.</param>
-        /// <param name="value">The new value to assign.</param>
-        /// <param name="lineNumber">The line number where the assignment occurs.</param>
-        /// <exception cref="Exception">
-        /// Thrown if the variable is not defined, if a reserved keyword is used, or if type conversion fails.
-        /// </exception>
+        
         public void SetVariable(string name, object value, int lineNumber)
         {
             if (variables.ContainsKey(name))
@@ -106,14 +80,6 @@ namespace Bisaya__
             }
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
-
-        /// <summary>
-        /// Converts a value to a specified type based on its token type.
-        /// </summary>
-        /// <param name="value">The value to convert.</param>
-        /// <param name="type">The target token type.</param>
-        /// <param name="lineNumber">The line number (used for error reporting).</param>
-        /// <returns>The converted value.</returns>
         private static object ConvertToType(object value, TokenType type, int lineNumber)
         {
             return type switch
@@ -126,13 +92,6 @@ namespace Bisaya__
                 _ => value,
             };
         }
-
-        /// <summary>
-        /// Checks whether a value is compatible with a specified token type.
-        /// </summary>
-        /// <param name="value">The value to check.</param>
-        /// <param name="type">The expected token type.</param>
-        /// <returns>True if the value is compatible; otherwise, false.</returns>
         private static bool IsTypeCompatible(object value, TokenType type)
         {
             return type switch
@@ -146,11 +105,6 @@ namespace Bisaya__
             };
         }
 
-        /// <summary>
-        /// Determines a string representation of the runtime type of a value.
-        /// </summary>
-        /// <param name="value">The value whose type is to be determined.</param>
-        /// <returns>A string representing the type.</returns>
         private static object RetrieveType(object value)
         {
             return value switch
@@ -164,18 +118,9 @@ namespace Bisaya__
             };
         }
     }
-
-    /// <summary>
-    /// Interprets the abstract syntax tree (AST) and executes the program.
-    /// </summary>
     public class InterpreterClass
     {
         private readonly ExecutionContext context = new();
-
-        /// <summary>
-        /// Interprets and executes the given program.
-        /// </summary>
-        /// <param name="program">The AST representing the program.</param>
         public void Interpret(ProgramNode program)
         {
             try
@@ -198,13 +143,6 @@ namespace Bisaya__
             }
         }
 
-        /// <summary>
-        /// Executes a single statement based on its type.
-        /// </summary>
-        /// <param name="statement">The statement to execute.</param>
-        /// <exception cref="NotImplementedException">
-        /// Thrown if execution for the statement type is not implemented.
-        /// </exception>
         private void ExecuteStatement(Statement statement)
         {
             switch (statement)
@@ -302,14 +240,6 @@ namespace Bisaya__
             }
         }
 
-        /// <summary>
-        /// Evaluates an expression and returns its value.
-        /// </summary>
-        /// <param name="expression">The expression to evaluate.</param>
-        /// <returns>The computed value of the expression.</returns>
-        /// <exception cref="NotImplementedException">
-        /// Thrown if evaluation for the expression type is not implemented.
-        /// </exception>
         private object EvaluateExpression(Expression expression)
         {
             switch (expression)
@@ -338,17 +268,6 @@ namespace Bisaya__
                     throw new NotImplementedException($"Error at line: {expression.LineNumber}. Evaluation not implemented for expression type {expression.GetType().Name}");
             }
         }
-
-        /// <summary>
-        /// Evaluates a binary expression using the specified operator.
-        /// </summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="operatorToken">The operator token.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns>The result of the binary operation.</returns>
-        /// <exception cref="NotImplementedException">
-        /// Thrown if the operator is not implemented.
-        /// </exception>
         private object EvaluateBinaryExpression(object left, Token operatorToken, object right)
         {
             if (operatorToken.Type == TokenType.SUMPAY)
@@ -406,16 +325,6 @@ namespace Bisaya__
             };
         }
 
-        /// <summary>
-        /// Evaluates a logical expression using the specified logical operator.
-        /// </summary>
-        /// <param name="left">The left boolean operand.</param>
-        /// <param name="operatorToken">The operator token.</param>
-        /// <param name="right">The right boolean operand.</param>
-        /// <returns>The result of the logical operation.</returns>
-        /// <exception cref="NotImplementedException">
-        /// Thrown if the logical operator is not implemented.
-        /// </exception>
         private static object EvaluateLogicalExpression(object left, Token operatorToken, object right)
         {
             if (left is bool leftBool && right is bool rightBool)
@@ -430,14 +339,6 @@ namespace Bisaya__
             throw new ArgumentException($"Error at line: {operatorToken.Line}. Invalid operands for logical expression. Found: '{left}' and '{right}'");
         }
 
-        /// <summary>
-        /// Evaluates a unary expression.
-        /// </summary>
-        /// <param name="expr">The unary expression to evaluate.</param>
-        /// <returns>The result of the unary operation.</returns>
-        /// <exception cref="Exception">
-        /// Thrown if the operand type is not valid for the unary operator.
-        /// </exception>
         private object EvaluateUnaryExpression(UnaryExpression expr)
         {
             object right = EvaluateExpression(expr.Right);
@@ -470,12 +371,6 @@ namespace Bisaya__
 
         #region Helper Methods
 
-        /// <summary>
-        /// Ensures the operand is of a correct type for the specified operation.
-        /// </summary>
-        /// <param name="value">The operand value.</param>
-        /// <param name="operationType">The operation token type.</param>
-        /// <returns>The operand, possibly converted.</returns>
         private static object EnsureCorrectType(object value, TokenType operationType)
         {
             switch (operationType)
@@ -502,16 +397,6 @@ namespace Bisaya__
             }
             return value;
         }
-
-        /// <summary>
-        /// Performs a binary arithmetic or comparison operation.
-        /// </summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <param name="operation">The operator symbol as a string.</param>
-        /// <param name="lineNumber">The line number (for error messages).</param>
-        /// <returns>The result of the operation.</returns>
-        /// <exception cref="Exception">Thrown if division by zero or invalid operands occur.</exception>
         private static object PerformOperation(object left, object right, string operation, int lineNumber)
         {
             if (left is float leftFloat && right is float rightFloat)
@@ -555,7 +440,6 @@ namespace Bisaya__
                 };
             }
 
-            // Comparisons for char, string, and bool.
             if ((left is char leftChar && right is char rightChar) && (operation == "==" || operation == "<>"))
             {
                 return operation == "==" ? left.Equals(right) : !left.Equals(right);
@@ -571,14 +455,6 @@ namespace Bisaya__
 
             throw new ArgumentException($"Error at line: {lineNumber}. Invalid operands for operation '{operation}'. Found: '{left}' and '{right}'.");
         }
-
-        /// <summary>
-        /// Increments the value of a variable by one, with overflow handling for integers.
-        /// </summary>
-        /// <param name="variable">The variable to increment.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the variable's current value is not an integer.
-        /// </exception>
         private void IncrementVariable(Variable variable)
         {
             object value = context.GetVariable(variable.Name, variable.LineNumber);
@@ -596,15 +472,6 @@ namespace Bisaya__
             }
         }
 
-        /// <summary>
-        /// Handles potential integer overflow during arithmetic operations.
-        /// </summary>
-        /// <param name="left">The left integer operand.</param>
-        /// <param name="right">The right integer operand.</param>
-        /// <param name="operation">The operation symbol.</param>
-        /// <param name="lineNumber">The line number for error reporting.</param>
-        /// <returns>The result of the arithmetic operation.</returns>
-        /// <exception cref="Exception">Thrown if an overflow occurs.</exception>
         private static object HandleIntegerOverflow(int left, int right, string operation, int lineNumber)
         {
             try
@@ -623,12 +490,6 @@ namespace Bisaya__
             }
         }
 
-        /// <summary>
-        /// Converts an object to an integer, supporting various input types.
-        /// </summary>
-        /// <param name="value">The value to convert.</param>
-        /// <param name="lineNumber">The line number (for error messages).</param>
-        /// <returns>The converted integer.</returns>
         public static int ConvertToInt(object value, int lineNumber)
         {
             if (value is float floatValue)
@@ -663,12 +524,6 @@ namespace Bisaya__
             }
             return Convert.ToInt32(value);
         }
-
-        /// <summary>
-        /// Attempts to convert a string value to a numeric type if applicable.
-        /// </summary>
-        /// <param name="value">The value to convert.</param>
-        /// <returns>The converted value, or the original if conversion fails.</returns>
         private static object ConvertIfString(object value)
         {
             if (value is string stringValue)
@@ -688,12 +543,6 @@ namespace Bisaya__
             }
             return value;
         }
-
-        /// <summary>
-        /// Converts a value to its string representation, handling booleans and floats specifically.
-        /// </summary>
-        /// <param name="value">The value to convert.</param>
-        /// <returns>The string representation of the value.</returns>
         public static string ConvertToString(object value)
         {
             return value switch
@@ -704,12 +553,6 @@ namespace Bisaya__
                 _ => value.ToString()
             };
         }
-
-        /// <summary>
-        /// Returns the default value for a given token type.
-        /// </summary>
-        /// <param name="type">The token type.</param>
-        /// <returns>The default value.</returns>
         private object GetDefaultValue(TokenType type)
         {
             return type switch
@@ -722,16 +565,6 @@ namespace Bisaya__
                 _ => null
             };
         }
-
-        /// <summary>
-        /// Determines if a given object represents a logical truthy value.
-        /// Used for evaluating conditions in control structures such as 'KUNG' and 'ALANG SA'.
-        /// </summary>
-        /// <param name="value">The value to evaluate.</param>
-        /// <returns>
-        /// Returns <c>true</c> if the value is logically true ("OO" or true boolean),
-        /// <c>false</c> otherwise.
-        /// </returns>
         private bool IsTruthy(object value)
         {
             if (value is bool b)
