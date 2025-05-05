@@ -6,54 +6,84 @@ namespace BisayaC
     {
         private readonly Dictionary<string, (object Value, TokenType Type)> variables = new();
 
+        //-----------------------------------------------------------------------------------//
+        //                            EXECUTION CONTEXT CLASS
+        //-----------------------------------------------------------------------------------//
+
+
+        /// Declares a variable in the execution context with a specific type and value.
+        /// name The name of the variable to declare.
+        /// value The value to assign to the variable.
+        /// type The expected type of the variable (e.g., NUMERO, TIPIK).
+        /// lineNumber The line number in the source code where the declaration occurs (used for error reporting).
         public void DeclareVariable(string name, object value, TokenType type, int lineNumber)
         {
-            object typedValue;
+            object typedValue; // Holds the value converted to the specified type.
+
             try
             {
+                // Convert the value to the specified type using a switch expression.
                 typedValue = type switch
                 {
-                    TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber),
-                    TokenType.TIPIK => Convert.ToSingle(value),
-                    TokenType.LETRA => Convert.ToChar(value),
-                    TokenType.TINUOD => Convert.ToBoolean(value),
-                    _ => value
+                    TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber), // Convert to integer.
+                    TokenType.TIPIK => Convert.ToSingle(value), // Convert to float.
+                    TokenType.LETRA => Convert.ToChar(value), // Convert to character.
+                    TokenType.TINUOD => Convert.ToBoolean(value), // Convert to boolean.
+                    _ => value // Default case: keep the value as-is.
                 };
 
+                // Store the variable in the dictionary with its name, value, and type.
                 variables[name] = (typedValue, type);
             }
             catch
             {
-                string valueString = InterpreterClass.ConvertToString(value);
-                string actualType = RetrieveType(value).ToString();
-                throw new ArgumentException($"Error at line: {lineNumber}. Type mismatch: Cannot declare '{name}' as {type} with value '{valueString}' type '{actualType}'.");
+                // Handle type mismatch errors.
+                string valueString = InterpreterClass.ConvertToString(value); // Convert the value to a string for error reporting.
+                string actualType = RetrieveType(value)?.ToString() ?? "UNKNOWN"; // Retrieve the actual type of the value or default to "UNKNOWN".
+                
+                // Throw an exception with a detailed error message.
+                throw new ArgumentException(
+                    $"Error at line: {lineNumber}. Type mismatch: Cannot declare '{name}' as {type} with value '{valueString}' type '{actualType}'."
+                );
             }
         }
 
+        /// Retrieves the value of a variable from the execution context.
         public object GetVariable(string name, int lineNumber)
         {
+            // Check if the variable name exists in the 'variables' dictionary.
+            // If it does, retrieve its associated value and return it.
             if (variables.TryGetValue(name, out var variable))
             {
-                return variable.Value;
+                return variable.Value; // Return the value of the variable.
             }
-            // Check if the name is a reserved keyword.
+
+            // If the variable name is not found, check if it is a reserved keyword.
+            // 'Lexer.keywords' is assumed to be a dictionary of reserved keywords.
             if (Lexer.keywords.TryGetValue(name, out var _type))
             {
+                // If the name is a reserved keyword, throw an exception with an error message.
                 throw new ArgumentException($"Error at line: {lineNumber}. Invalid use of reserved keyword '{name}'.");
             }
+
+            // If the variable is neither defined nor a reserved keyword, throw an exception.
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
         
+        /// Sets the value of an existing variable in the execution context.
         public void SetVariable(string name, object value, int lineNumber)
         {
             if (variables.ContainsKey(name))
             {
                 var (existingValue, type) = variables[name];
                 object typedValue;
+                // Attempt to convert the value to the expected type.
 
                 try
                 {
                     typedValue = ConvertToType(value, type, lineNumber);
+                    // Check if the converted value is compatible with the existing variable type.
+                    // If not, throw an exception.
                     if (!IsTypeCompatible(typedValue, type))
                     {
                         throw new InvalidOperationException($"Error at line: {lineNumber}. Incompatible type after conversion.");
@@ -76,25 +106,15 @@ namespace BisayaC
             }
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
-        private static object ConvertToType(object value, TokenType type, int lineNumber)
-        {
-            return type switch
-            {
-                TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber),
-                TokenType.TIPIK => Convert.ToSingle(value),
-                TokenType.LETRA => Convert.ToChar(value),
-                TokenType.TINUOD => Convert.ToBoolean(value),
-                TokenType.PULONG => value.ToString(),
-                _ => value,
-            };
-        }
+        /// Converts the value to the specified type.
+        /// Typings Manipulations
         private static bool IsTypeCompatible(object value, TokenType type)
         {
             return type switch
             {
                 TokenType.NUMERO => int.TryParse(value.ToString(), out _),
                 TokenType.TIPIK => float.TryParse(value.ToString(), out _),
-                TokenType.LETRA => value.ToString().Length == 1,
+                TokenType.LETRA => value?.ToString()?.Length == 1,
                 TokenType.TINUOD => bool.TryParse(value.ToString(), out _),
                 TokenType.PULONG => value is string,
                 _ => false,
@@ -113,12 +133,42 @@ namespace BisayaC
                 _ => value.GetType().Name.ToUpper()
             };
         }
+    
+        /// Converts the value to the specified type based on the provided token type.
+        /// This method is used to ensure that the value is of the correct type before assignment.
+        private static object ConvertToType(object value, TokenType type, int lineNumber)
+        {
+            return type switch
+            {
+                TokenType.NUMERO => InterpreterClass.ConvertToInt(value, lineNumber),
+                TokenType.TIPIK => Convert.ToSingle(value),
+                TokenType.LETRA => Convert.ToChar(value),
+                TokenType.TINUOD => Convert.ToBoolean(value),
+                TokenType.PULONG => value.ToString(),
+                _ => value,
+            };
+        }
     }
+
+
+
+
+    //-----------------------------------------------------------------------------------//
+    //                            INTERPRETER CLASS
+    //-----------------------------------------------------------------------------------//
+    /// The InterpreterClass is responsible for interpreting and executing the program.
+    /// It processes various types of statements and expressions, handling variable declarations,
+    /// assignments, arithmetic operations, logical operations, and control flow statements.
     public class InterpreterClass
     {
         private readonly ExecutionContext context = new();
+        // The ExecutionContext instance is used to manage the variables and their values during execution.
+        // It provides methods to declare, get, and set variables, ensuring type safety and error handling.
+
         public void Interpret(ProgramNode program)
         {
+            // The Interpret method takes a ProgramNode object as input, which represents the entire program.
+            // It iterates through the statements in the program and executes each one using the ExecuteStatement method.
             try
             {
                 if (program == null || program.Statements == null)
@@ -139,11 +189,15 @@ namespace BisayaC
             }
         }
 
+        /// Executes a single statement based on its type.
+        /// The method uses a switch statement to determine the type of the statement and calls the appropriate handler.
         private void ExecuteStatement(Statement statement)
         {
             switch (statement)
             {
                 case DeclarationStatement decl:
+                    // Handle variable declarations.
+                    // The declaration can include multiple variables, each with an optional initializer.
                     foreach (var variable in decl.Variables)
                     {
                         var value = variable.Initializer != null ? EvaluateExpression(variable.Initializer) : GetDefaultValue(decl.Type);
@@ -151,6 +205,8 @@ namespace BisayaC
                     }
                     break;
                 case AssignmentStatement assign:
+                    // Handle variable assignments.
+                    // The assignment can include an operator (e.g., +=, -=) and a value to assign.
                     var assignValue = EvaluateExpression(assign.Value);
                     var variableValue = context.GetVariable(assign.Variable.Name, assign.LineNumber);
                     if (assign.Operator.Type != TokenType.ASAYNMENT)
@@ -160,9 +216,13 @@ namespace BisayaC
                     context.SetVariable(assign.Variable.Name, assignValue, assign.LineNumber);
                     break;
                 case IncrementStatement increment:
+                    // Handle increment statements.
+                    // The increment statement increases the value of a variable by 1.
                     IncrementVariable(increment.Variable);
                     break;
                 case InputStatement inputStmt:
+                    // Handle input statements.
+                    // The input statement prompts the user for input and assigns it to the specified variables.
                     foreach (var variable in inputStmt.Variables)
                     {
                         var input = Console.ReadLine();
@@ -174,12 +234,16 @@ namespace BisayaC
                     }
                     break;
                 case OutputStatement output:
+                    // Handle output statements.
+                    // The output statement prints the result of evaluating the specified expressions to the console.
                     foreach (var expression in output.Expressions)
                     {
                         Console.Write(ConvertToString(EvaluateExpression(expression)));
                     }
                     break;
                 case IfStatement ifStmt:
+                    // Handle if statements.
+                    // The if statement evaluates a condition and executes the corresponding branch (then or else).
                     bool condition = (bool)EvaluateExpression(ifStmt.Condition);
                     if (condition)
                     {
@@ -197,6 +261,8 @@ namespace BisayaC
                     }
                     break;
                 case ForLoopStatement forLoop:
+                    // Handle for loop statements.
+                    // The for loop consists of initialization, condition, and update expressions.
                     ExecuteStatement(forLoop.Initialization);
 
                     while (IsTruthy(EvaluateExpression(forLoop.Condition)))
@@ -211,7 +277,6 @@ namespace BisayaC
                             unaryExpr.Right is VariableExpression varExpr)
                         {
                             var variable = new Variable(varExpr.Name, forLoop.Update.LineNumber);
-
                             IncrementVariable(variable);
                         }
                         else
@@ -219,8 +284,10 @@ namespace BisayaC
                             EvaluateExpression(forLoop.Update);
                         }
                     }
-                    break;     
+                    break;
                 case WhileStatement whileStmt:
+                    // Handle while loop statements.
+                    // The while loop continues executing as long as the condition is true.
                     while ((bool)EvaluateExpression(whileStmt.Condition))
                     {
                         foreach (var bodyStmt in whileStmt.Body)
@@ -230,12 +297,18 @@ namespace BisayaC
                     }
                     break;
                 case EmptyStatement:
+                    Console.WriteLine("Task completed without any errors");
+                    // Handle empty statements (no operation).
+                    // This is a placeholder for statements that do not perform any action.
                     break;
                 default:
                     throw new NotImplementedException($"Error at line: {statement.LineNumber}. Execution not implemented for statement type {statement.GetType().Name}");
             }
         }
 
+
+        /// Evaluates an expression and returns its value.
+        /// The method uses a switch statement to determine the type of the expression and calls the appropriate evaluator.
         private object EvaluateExpression(Expression expression)
         {
             switch (expression)
@@ -354,8 +427,8 @@ namespace BisayaC
                     int rightInt => rightInt,
                     _ => throw new ArgumentException($"Error at line: {expr.LineNumber}. Unary '+' expects a numeric operand.")
                 },
-                TokenType.DILI => right is bool rightBool ? !rightBool : 
-                         throw new ArgumentException($"Error at line: {expr.LineNumber}. Unary 'NOT' expects a boolean operand. Found: '{right}'"),
+                TokenType.DILI => right is bool rightBool ? !rightBool :
+                    throw new ArgumentException($"Error at line: {expr.LineNumber}. Unary 'NOT' expects a boolean operand. Found: '{right}'"),
                 TokenType.INCREMENT => right switch
                 {
                     int rightInt => HandleIntegerOverflow(rightInt, 1, "+", expr.LineNumber),
