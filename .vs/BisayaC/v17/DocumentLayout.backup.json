@@ -11,20 +11,16 @@
       "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\syntaxanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\lexicalanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\lexicalanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\tr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\tr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,8 +30,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "inputhere.txt",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt",
+              "RelativeDocumentMoniker": "Main\\inputhere.txt",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt",
+              "RelativeToolTip": "Main\\inputhere.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-05-05T20:39:33.232Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "mainprogram.cs",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs",
+              "RelativeDocumentMoniker": "Main\\mainprogram.cs",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs",
+              "RelativeToolTip": "Main\\mainprogram.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAAwC0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-05T20:39:08.001Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 3,
@@ -44,27 +78,14 @@
               "RelativeDocumentMoniker": "Main\\LexicalAnalyzer.cs",
               "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\LexicalAnalyzer.cs",
               "RelativeToolTip": "Main\\LexicalAnalyzer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-05T19:23:29.246Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "tr.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\tr.cs",
-              "RelativeDocumentMoniker": "Main\\tr.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\tr.cs",
-              "RelativeToolTip": "Main\\tr.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T18:49:02.282Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "BisayaCEvaluator.cs",
               "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\BisayaCEvaluator.cs",
               "RelativeDocumentMoniker": "Main\\BisayaCEvaluator.cs",
@@ -72,8 +93,7 @@
               "RelativeToolTip": "Main\\BisayaCEvaluator.cs",
               "ViewState": "AgIAAIoAAAAAAAAAAAAlwJkAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T18:47:12.873Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T18:47:12.873Z"
             },
             {
               "$type": "Document",
@@ -83,35 +103,9 @@
               "RelativeDocumentMoniker": "Main\\SyntaxAnalyzer.cs",
               "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\SyntaxAnalyzer.cs",
               "RelativeToolTip": "Main\\SyntaxAnalyzer.cs",
-              "ViewState": "AgIAAAEBAAAAAAAAAAAowBkBAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGECAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-05T18:43:37.753Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "inputhere.txt",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt",
-              "RelativeDocumentMoniker": "Main\\inputhere.txt",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt*",
-              "RelativeToolTip": "Main\\inputhere.txt*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-05-05T18:41:42.073Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "mainprogram.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs",
-              "RelativeDocumentMoniker": "Main\\mainprogram.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs",
-              "RelativeToolTip": "Main\\mainprogram.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAowDIAAABeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T18:40:54.876Z",
               "EditorCaption": ""
             }
           ]
