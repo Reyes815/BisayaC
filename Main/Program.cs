@@ -73,16 +73,16 @@
                                     ).ToString()
                                 );
 
-            string filename = "program.bisaya++";
+            string filename = "C:/Users/Rowen/Desktop/BisayaC/Main/Editor.txt";
             string filePath = Path.Combine(projectFolder.ToString(), filename);
 
-            if (!File.Exists(filePath))
+            if (!File.Exists(filename))
             {
                 PrintError($"Error: File not found: {filePath}");
                 return;
             }
 
-            string code = File.ReadAllText(filePath);
+            string code = File.ReadAllText(filename);
             Console.WriteLine($"Source file loaded: {filePath}");
             Console.WriteLine("----------------------------------------");
 
