@@ -6,57 +6,77 @@ namespace BisayaC
     public class SyntaxAnalyzer
     {
         private readonly List<Token> tokens;
-        private readonly List<Statement> statements = new List<Statement>();
-        private readonly Dictionary<string, TokenType> declaredVariables = new Dictionary<string, TokenType>();
-        private int current = 0;
-        private bool isInsideDisplay = false; 
-        private bool isInsideConditional = false; 
-        private bool isInsideIfBlock = false;
-        
+        private readonly List<Statement> statements;
+        private readonly Dictionary<string, TokenType> declaredVariables;
+
+        private int pos;
+        private bool isDisplay;
+        private bool isConditional;
+        private bool isIf;
+
         public SyntaxAnalyzer(List<Token> tokens)
         {
             this.tokens = tokens;
+            this.statements = new List<Statement>();
+            this.declaredVariables = new Dictionary<string, TokenType>();
+            this.pos = 0;
+            this.isDisplay = false;
+            this.isConditional = false;
+            this.isIf = false;
         }
 
-        #region Public Parsing Methods
-        
+        #region Parsing Methods
+
         public ProgramNode Parse()
         {
             try
             {
-                ValidateProgramStructure();
-                
-                Consume(TokenType.SUGOD, MissingToken, "SUGOD", "at the beginning of the program");
-                ConsumeNewlines();
-                
-                while (!IsAtEnd() && !Check(TokenType.KATAPUSAN))
-                {
-                    Statement stmt = BeginParsing();
-                    if (stmt != null)
-                    {
-                        ConsumeNewlines();
-                        statements.Add(stmt);
-                        ConsumeNewlines();
-                    }
-                }
-                
-                Consume(TokenType.KATAPUSAN, MissingToken, "KATAPUSAN", "at the end of the program");
+                ValidateStructure();
+                ParseProgramStart();
+                ParseStatements();
+                ParseProgramEnd();
 
                 return new ProgramNode(statements);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.Message}");
+                Console.WriteLine(ex.Message);
                 Environment.Exit(1);
-                return null;
+                return null; // Required for compilation, though this line will never be reached
             }
         }
+
+        private void ParseProgramStart()
+        {
+            ReadToken(TokenType.SUGOD, MissingToken, "SUGOD", "at the start of the program");
+            SkipEmptyLines();
+        }
+
+        private void ParseStatements()
+        {
+            while (!IsAtEnd() && !Check(TokenType.KATAPUSAN))
+            {
+                Statement stmt = StartParsing();
+                if (stmt != null)
+                {
+                    SkipEmptyLines();
+                    statements.Add(stmt);
+                    SkipEmptyLines();
+                }
+            }
+        }
+
+        private void ParseProgramEnd()
+        {
+            ReadToken(TokenType.KATAPUSAN, MissingToken, "KATAPUSAN", "at the end of the program");
+        }
+
 
         #endregion Public Parsing Methods
 
         #region Statement Parsing
-        
-        private Statement BeginParsing()
+
+        private Statement StartParsing()
         {
             try
             {
@@ -74,46 +94,56 @@ namespace BisayaC
 
         private Statement ParseDeclaration()
         {
+            // Ensure a valid type is present after 'MUGNA'
             if (!Match(TokenType.NUMERO, TokenType.PULONG, TokenType.LETRA, TokenType.TINUOD, TokenType.TIPIK))
             {
-                ThrowError(Peek().Line, MissingToken, "variable type after 'MUGNA'");
+                ThrowError(Peek().Line, MissingToken, "a data type after 'MUGNA'");
             }
 
-            TokenType type = Previous().Type;
+            TokenType varType = Previous().Type;
             var variables = new List<Variable>();
 
+            // Parse one or more variable declarations separated by commas
             do
             {
+                // Variable name must not be a reserved keyword
                 if (IsReservedKeyword(Peek().Value))
                 {
                     ThrowError(Peek().Line, KeywordIsReserved, Peek().Value);
                 }
 
-                string name = Consume(TokenType.IDENTIFIER, MissingToken, "a valid variable name", $"found '{Peek().Value}'").Value;
+                // Get the variable name
+                string name = ReadToken(TokenType.IDENTIFIER, MissingToken, "a variable name", $"got '{Peek().Value}' instead").Value;
+
+                // Check for duplicate declarations
                 if (declaredVariables.ContainsKey(name))
                 {
-                    ThrowError(Peek().Line, KeywordIsReserved, name, "Variable already declared.");
+                    ThrowError(Peek().Line, KeywordIsReserved, $"Variable '{name}' is already declared.");
                 }
 
+                // Optional initializer (e.g. MUGNA NUMERO x = 5)
                 Expression initializer = null;
                 if (Match(TokenType.ASAYNMENT))
                 {
                     initializer = ParseExpression();
                 }
 
-                if (type == TokenType.TINUOD && initializer is LiteralExpression lit && lit.Value is string)
+                // Validate boolean values if type is TINUOD
+                if (varType == TokenType.TINUOD && initializer is LiteralExpression lit && lit.Value is string boolStr)
                 {
-                    string boolValue = lit.Value.ToString();
-                    if (boolValue != "OO" && boolValue != "DILI")
+                    if (boolStr != "OO" && boolStr != "DILI")
                     {
-                        ThrowError(Peek().Line, General, $"Boolean values must be either 'OO' or 'DILI'. Found: {boolValue}");
+                        ThrowError(Peek().Line, General, $"Boolean values must be 'OO' or 'DILI'. Found: {boolStr}");
                     }
                 }
 
+                // Save the variable
                 variables.Add(new Variable(name, Previous().Line, initializer));
-                declaredVariables.Add(name, type);
-            } while (Match(TokenType.KAMA));
+                declaredVariables.Add(name, varType);
 
+            } while (Match(TokenType.KAMA)); // Loop if there's a comma
+
+            // Handle common mistakes after declaration
             if (Peek().Type == TokenType.IDENTIFIER)
             {
                 ThrowError(Peek().Line, MissingToken, ",", "for multiple declarations on one line");
@@ -121,62 +151,52 @@ namespace BisayaC
 
             if (Match(TokenType.NUMERO, TokenType.LETRA, TokenType.TINUOD, TokenType.TIPIK, TokenType.PULONG))
             {
-                ThrowError(Peek().Line, General, $"Improper declaration. Cause: '{Previous().Value}'");
+                ThrowError(Peek().Line, General, $"Unexpected type: '{Previous().Value}'");
             }
 
             if (Match(TokenType.MUGNA))
             {
-                ThrowError(Peek().Line, General, "Another 'MUGNA' statement detected");
+                ThrowError(Peek().Line, General, "Unexpected 'MUGNA' found again");
             }
 
-            return new DeclarationStatement(type, variables, Previous().Line);
+            return new DeclarationStatement(varType, variables, Previous().Line);
         }
-        
+
+
         private Statement ParseStatement()
         {
-            if (Match(TokenType.KUNG))
-            {
-                return IfStatement();
-            }
-            if (Match(TokenType.ALANG))
-            {
-                return ForStatement();
-            }
-            if (Match(TokenType.SAMTANG))
-            {
-                return WhileStatement();
-            }
-            if (Match(TokenType.IPAKITA))
-            {
-                return OutputStatement();
-            }
-            if (Match(TokenType.DAWAT))
-            {
-                return InputStatement();
-            }
+            if (Match(TokenType.KUNG)) return ParseIfStatement();
+            if (Match(TokenType.ALANG)) return ParseForStatement();
+            if (Match(TokenType.SAMTANG)) return ParseWhileStatement();
+            if (Match(TokenType.IPAKITA)) return ParseOutputStatement();
+            if (Match(TokenType.DAWAT)) return ParseInputStatement();
 
+            // Assignment or increment check
             if (Check(TokenType.IDENTIFIER) || Check(TokenType.KAMA))
             {
+                // Handle chained assignment error
                 if (statements.Count > 0 &&
                     Statement(statements.Count - 1) is AssignmentStatement &&
                     Previous().Type != TokenType.SUNODLINYA)
                 {
-                    Consume(TokenType.KAMA, MissingToken, ",", "after an assignment");
+                    ReadToken(TokenType.KAMA, MissingToken, ",", "after an assignment");
                 }
 
+                // Check if variable is declared
                 if (!declaredVariables.ContainsKey(Peek().Value) && Check(TokenType.IDENTIFIER))
                 {
                     ThrowError(Peek().Line, VariableNotDeclared, Peek().Value);
                 }
-                
+
+                // Check for increment
                 if (Match(TokenType.IDENTIFIER))
                 {
-                    Token identifierToken = Previous();
+                    Token id = Previous();
                     if (Match(TokenType.INCREMENT))
                     {
-                        return new IncrementStatement(new Variable(identifierToken.Value, Previous().Line), Previous().Line);
+                        return new IncrementStatement(new Variable(id.Value, id.Line), id.Line);
                     }
-                    current--;
+                    pos--; // rollback if not increment
                 }
 
                 return ParseAssignmentStatement();
@@ -186,20 +206,21 @@ namespace BisayaC
             {
                 ThrowError(Peek().Line, General, $"Unknown character '{Peek().Value}'");
             }
-            
-            if (isInsideIfBlock)
+
+            if (isIf)
                 return new EmptyStatement(Peek().Line);
 
             ThrowError(Peek().Line, General, $"Invalid statement. Cause: '{Peek().Value}'");
             return null;
         }
-        
+
         private AssignmentStatement ParseAssignmentStatement()
         {
-            Token name = Consume(TokenType.IDENTIFIER, MissingToken, "variable name");
+            Token name = ReadToken(TokenType.IDENTIFIER, MissingToken, "variable name");
+
             if (IsReservedKeyword(name.Value))
             {
-                ThrowError(Peek().Line,KeywordIsReserved, name.Value, "cannot be used as a variable name");
+                ThrowError(name.Line, KeywordIsReserved, name.Value, "cannot be used as a variable name");
             }
 
             Token operatorToken = null;
@@ -239,11 +260,11 @@ namespace BisayaC
 
             return new AssignmentStatement(new Variable(name.Value, value.LineNumber), operatorToken, value, value.LineNumber);
         }
-        
-        private Statement OutputStatement()
+
+        private Statement ParseOutputStatement()
         {
-            isInsideDisplay = true;
-            Consume(TokenType.DUHATULDOK, MissingToken, ":", "after 'IPAKITA' statement");
+            isDisplay = true;
+            ReadToken(TokenType.DUHATULDOK, MissingToken, ":", "after 'IPAKITA'");
 
             var expressions = new List<Expression>();
 
@@ -252,29 +273,30 @@ namespace BisayaC
                 ThrowError(Peek().Line, General, "Nothing to display.");
             }
 
-            do
+            while (!Check(TokenType.KATAPUSAN) && !IsAtEnd() && !Peek().Value.Contains("\\n"))
             {
                 if (Check(TokenType.SUNODLINYA))
                 {
                     Advance();
-                    expressions.Add(new LiteralExpression("\n", Previous().Line));
+                    expressions.Add(new LiteralExpression("\\n", Previous().Line));
                     continue;
                 }
-                expressions.Add(ParseExpression());
-            } while (!Check(TokenType.KATAPUSAN) && !IsAtEnd() && !Peek().Value.Contains("\\n"));
 
-            if (!declaredVariables.ContainsKey(Previous().Value) && Previous().Type == TokenType.IDENTIFIER)
-            {
-                ThrowError(Peek().Line, VariableNotDeclared, Previous().Value);
+                expressions.Add(ParseExpression());
             }
 
-            isInsideDisplay = false;
+            if (Previous().Type == TokenType.IDENTIFIER && !declaredVariables.ContainsKey(Previous().Value))
+            {
+                ThrowError(Previous().Line, VariableNotDeclared, Previous().Value);
+            }
+
+            isDisplay = false;
             return new OutputStatement(expressions, Previous().Line);
         }
-        
-        private Statement InputStatement()
+
+        private Statement ParseInputStatement()
         {
-            Consume(TokenType.DUHATULDOK, MissingToken, ":", "after 'DAWAT' statement");
+            ReadToken(TokenType.DUHATULDOK, MissingToken, ":", "after 'DAWAT'");
 
             var variables = new List<Variable>();
 
@@ -286,376 +308,417 @@ namespace BisayaC
                     {
                         ThrowError(Peek().Line, KeywordIsReserved, Peek().Value);
                     }
+
                     bool isIdentifier = Peek().Type == TokenType.IDENTIFIER;
                     ThrowError(Peek().Line, isIdentifier ? VariableNotDeclared : General, Peek().Value);
                 }
 
-                variables.Add(new Variable(Consume(TokenType.IDENTIFIER, MissingToken, "variable name for input").Value, Previous().Line));
+                string varName = ReadToken(TokenType.IDENTIFIER, MissingToken, "input variable name").Value;
+                variables.Add(new Variable(varName, Previous().Line));
+
             } while (Match(TokenType.KAMA));
 
             if (Check(TokenType.IDENTIFIER))
-                ThrowError(Peek().Line, MissingToken, "comma", $"between variables, received '{Peek().Value}'.");
+            {
+                ThrowError(Peek().Line, MissingToken, "comma", $"between variables, got '{Peek().Value}' instead.");
+            }
 
             return new InputStatement(variables, Peek().Line);
         }
-        
-        private Statement IfStatement()
-        {
-            Consume(TokenType.ABLIKUTOB, MissingToken, "(", "after 'KUNG'");
-            isInsideConditional = true;
-            Expression condition = ParseExpression();
-            isInsideConditional = false;
-            Consume(TokenType.SIRAKUTOB, MissingToken, ")", "after condition");
-            Advance();
 
-            Consume(TokenType.PUNDOK, MissingToken, "PUNDOK");
-            isInsideIfBlock = true;
-            List<Statement> thenBranch = Block();
+        private Statement ParseIfStatement()
+        {
+            ReadToken(TokenType.ABLIKUTOB, MissingToken, "(", "after 'KUNG'");
+            isConditional = true;
+            Expression condition = ParseExpression();
+            isConditional = false;
+            ReadToken(TokenType.SIRAKUTOB, MissingToken, ")", "after condition");
+            Advance(); // move past ')'
+
+            ReadToken(TokenType.PUNDOK, MissingToken, "PUNDOK", "to begin 'KUNG' block");
+            isIf = true;
+            List<Statement> thenBranch = ParseBlock();
             List<Statement> elseBranch = null;
 
-            ConsumeNewlines();
+            SkipEmptyLines();
+
+            // Handle 'KUNG DILI' or 'KUNG WALA'
             if (Match(TokenType.KUNG))
             {
-                ConsumeNewlines();
+                SkipEmptyLines();
+
                 if (Match(TokenType.DILI))
                 {
-                    elseBranch = new List<Statement> { IfStatement() };
+                    elseBranch = new List<Statement> { ParseIfStatement() };
                 }
                 else if (Match(TokenType.WALA))
                 {
-                    ConsumeNewlines();
-                    Consume(TokenType.PUNDOK, MissingToken, "PUNDOK", "after 'WALA'");
-                    elseBranch = Block();
+                    SkipEmptyLines();
+                    ReadToken(TokenType.PUNDOK, MissingToken, "PUNDOK", "after 'WALA'");
+                    elseBranch = ParseBlock();
                 }
                 else
                 {
+                    // Unexpected token after KUNG, rollback
                     tokens.Add(Previous());
-                    current--;
+                    pos--;
                 }
             }
-            isInsideIfBlock = false;
+
+            isIf = false;
             return new IfStatement(condition, thenBranch, elseBranch, Previous().Line);
         }
-        
-        private Statement ForStatement()
+
+        private Statement ParseForStatement()
         {
-            Consume(TokenType.SA, MissingToken, "SA", "after 'ALANG'");
-            Consume(TokenType.ABLIKUTOB, MissingToken, "(", "after 'SA' in for loop header");
+            ReadToken(TokenType.SA, MissingToken, "SA", "after 'ALANG'");
+            ReadToken(TokenType.ABLIKUTOB, MissingToken, "(", "after 'SA' in loop header");
 
             AssignmentStatement initialization = ParseAssignmentStatement();
-            Consume(TokenType.KAMA, MissingToken, ",", "after initialization in for loop header");
+            ReadToken(TokenType.KAMA, MissingToken, ",", "after initialization");
 
             Expression condition = ParseExpression();
-            Consume(TokenType.KAMA, MissingToken, ",", "after condition in for loop header");
+            ReadToken(TokenType.KAMA, MissingToken, ",", "after condition");
 
-            
             Expression update = ParseExpression();
-            Consume(TokenType.SIRAKUTOB, MissingToken, ")", "after for loop header");
+            ReadToken(TokenType.SIRAKUTOB, MissingToken, ")", "after update expression");
 
-            ConsumeNewlines();
-            Consume(TokenType.PUNDOK, MissingToken, "PUNDOK", "for for loop body");
-            List<Statement> body = Block();
+            SkipEmptyLines();
+            ReadToken(TokenType.PUNDOK, MissingToken, "PUNDOK", "to begin loop body");
+            List<Statement> body = ParseBlock();
 
-            // TODO: Implement for loop
             return new ForLoopStatement(initialization, condition, update, body, Previous().Line);
         }
-        
-        private Statement WhileStatement()
-        {
-            Consume(TokenType.ABLIKUTOB, MissingToken, "(", "after 'SAMTANG'");
-            isInsideConditional = true;
-            Expression condition = ParseExpression();
-            isInsideConditional = false;
-            Consume(TokenType.SIRAKUTOB, MissingToken, ")", "after condition");
-            Advance();
 
-            Consume(TokenType.PUNDOK, MissingToken, "PUNDOK", "for while loop body");
-            List<Statement> body = Block();
+        private Statement ParseWhileStatement()
+        {
+            ReadToken(TokenType.ABLIKUTOB, MissingToken, "(", "after 'SAMTANG'");
+            isConditional = true;
+            Expression condition = ParseExpression();
+            isConditional = false;
+            ReadToken(TokenType.SIRAKUTOB, MissingToken, ")", "after condition");
+            Advance(); // skip past ')'
+
+            ReadToken(TokenType.PUNDOK, MissingToken, "PUNDOK", "to begin while loop body");
+            List<Statement> body = ParseBlock();
 
             return new WhileStatement(condition, body, Previous().Line);
         }
-        
-        private List<Statement> Block()
+
+        private List<Statement> ParseBlock()
         {
-            var blockStatements = new List<Statement>();
-            Consume(TokenType.SUGODKUNG, VariableNotDeclared, "{", "before block");
-            ConsumeNewlines();
+            var statements = new List<Statement>();
+            ReadToken(TokenType.SUGODKUNG, VariableNotDeclared, "{", "to start block");
+            SkipEmptyLines();
 
             while (!Check(TokenType.HUMANKUNG) && !Check(TokenType.KATAPUSAN) && !IsAtEnd())
             {
-                Statement stmt = BeginParsing();
+                Statement stmt = StartParsing();
                 if (stmt != null)
                 {
-                    ConsumeNewlines();
-                    blockStatements.Add(stmt);
-                    ConsumeNewlines();
+                    SkipEmptyLines();
+                    statements.Add(stmt);
+                    SkipEmptyLines();
                 }
             }
 
-            Consume(TokenType.HUMANKUNG, VariableNotDeclared, "}", "after block");
-            ConsumeNewlines();
-            return blockStatements;
+            ReadToken(TokenType.HUMANKUNG, VariableNotDeclared, "}", "to end block");
+            SkipEmptyLines();
+
+            return statements;
         }
 
         #endregion Statement Parsing
 
         #region Expression Parsing
-        
-        private Expression ParseExpression() => Assignment();
-        
-        private Expression Assignment()
+
+        public Expression ParseExpression() => ParseAssignment();
+
+        private Expression ParseAssignment()
         {
-            Expression expr = LogicOr();
+            var expr = ParseLogicOr();
 
             if (Match(TokenType.ASAYNMENT))
             {
-                if (isInsideConditional)
-                {
-                    ThrowError(Peek().Line, General, "Cannot use assignment operator '=' within conditional statements.");
-                }
+                if (isConditional)
+                    ThrowError(Peek().Line, General, "Cannot use '=' in a conditional statement.");
 
-                Token op = Previous();
-                Expression value = Assignment();
+                Token equals = Previous();
+                Expression value = ParseAssignment();
 
                 if (expr is VariableExpression varExpr)
                 {
-                    return new AssignmentExpression(new Variable(varExpr.Name, varExpr.LineNumber), op, value, varExpr.LineNumber);
+                    return new AssignmentExpression(new Variable(varExpr.Name, varExpr.LineNumber), equals, value, varExpr.LineNumber);
                 }
 
-                ThrowError(Peek().Line,  AssignmentTargetInvalid);
+                ThrowError(equals.Line, AssignmentTargetInvalid);
             }
 
             return expr;
         }
-        
-        private Expression LogicOr()
+
+        private Expression ParseLogicOr()
         {
-            Expression expr = LogicAnd();
+            var expr = ParseLogicAnd();
+
             while (Match(TokenType.O))
             {
                 Token op = Previous();
-                Expression right = LogicAnd();
+                Expression right = ParseLogicAnd();
                 expr = new LogicalExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
-        
-        private Expression LogicAnd()
+
+        private Expression ParseLogicAnd()
         {
-            Expression expr = Equality();
+            var expr = ParseEquality();
+
             while (Match(TokenType.UG))
             {
                 Token op = Previous();
-                Expression right = Equality();
+                Expression right = ParseEquality();
                 expr = new LogicalExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
 
-        private Expression Equality()
+        private Expression ParseEquality()
         {
-            Expression expr = Comparison();
+            var expr = ParseComparison();
+
             while (Match(TokenType.PAREHAS, TokenType.LAHI))
             {
                 Token op = Previous();
-                Expression right = Comparison();
+                Expression right = ParseComparison();
                 expr = new BinaryExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
-        
-        private Expression Comparison()
+
+        private Expression ParseComparison()
         {
-            Expression expr = Term();
+            var expr = ParseTerm();
+
             while (Match(TokenType.LABAW, TokenType.UBOS, TokenType.LABAWSA, TokenType.UBOSSA))
             {
                 Token op = Previous();
-                Expression right = Term();
+                Expression right = ParseTerm();
                 expr = new BinaryExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
-        
-        private Expression Term()
+
+        private Expression ParseTerm()
         {
-            Expression expr = Factor();
+            var expr = ParseFactor();
+
             while (Match(TokenType.DUGANG, TokenType.KUHA, TokenType.SUMPAY))
             {
-                if (Previous().Type == TokenType.SUMPAY && !isInsideDisplay)
-                {
-                    ThrowError(Peek().Line, General, "Cannot perform concatenation '&' outside IPAKITA statement.");
-                }
                 Token op = Previous();
-                Expression right = Factor();
+
+                if (op.Type == TokenType.SUMPAY && !isDisplay)
+                    ThrowError(op.Line, General, "'&' (concatenation) is only allowed in IPAKITA statements.");
+
+                Expression right = ParseFactor();
                 expr = new BinaryExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
 
-
-        private Expression Factor()
+        private Expression ParseFactor()
         {
-            Expression expr = Unary();
+            var expr = ParseUnary();
+
             while (Match(TokenType.PADAGHAN, TokenType.BAHIN, TokenType.SOBRA))
             {
                 Token op = Previous();
-                Expression right = Unary();
+                Expression right = ParseUnary();
                 expr = new BinaryExpression(expr, op, right, op.Line);
             }
+
             return expr;
         }
 
-
-        private Expression Unary()
+        private Expression ParseUnary()
         {
+            // Treat "DILI" as a literal boolean if it's a standalone value
             if (Check(TokenType.DILI) && Peek().Value == "DILI")
-            {
-                return Primary();
-            }
+                return ParsePrimary();
 
             if (Match(TokenType.KUHA, TokenType.DILI))
             {
                 Token op = Previous();
-                Expression right = Unary();
+                Expression right = ParseUnary();
                 return new UnaryExpression(op, right, op.Line);
             }
 
-            return Primary();
+            return ParsePrimary();
         }
 
-        private Expression Primary()
+        private Expression ParsePrimary()
         {
             if (Match(TokenType.OO, TokenType.DILI))
-            {
-                bool value = Previous().Type == TokenType.OO;
-                return new LiteralExpression(value, Previous().Line);
-            }
+                return new LiteralExpression(Previous().Type == TokenType.OO, Previous().Line);
 
             if (Match(TokenType.INTEGERLITERAL))
-            {
-                int value = int.Parse(Previous().Value);
-                return new LiteralExpression(value, Previous().Line);
-            }
+                return new LiteralExpression(int.Parse(Previous().Value), Previous().Line);
 
             if (Match(TokenType.FLOATLITERAL))
-            {
-                float value = float.Parse(Previous().Value);
-                return new LiteralExpression(value, Previous().Line);
-            }
+                return new LiteralExpression(float.Parse(Previous().Value), Previous().Line);
 
             if (Match(TokenType.CHARACTERLITERAL))
-            {
-                char value = Previous().Value[0];
-                return new LiteralExpression(value, Previous().Line);
-            }
+                return new LiteralExpression(Previous().Value[0], Previous().Line);
 
             if (Match(TokenType.STRINGLITERAL))
-            {
-                string value = Previous().Value;
-                return new LiteralExpression(value, Previous().Line);
-            }
+                return new LiteralExpression(Previous().Value, Previous().Line);
 
             if (Match(TokenType.IDENTIFIER))
             {
-                VariableExpression varExpr = new VariableExpression(Previous().Value, Previous().Line);
+                var variable = new VariableExpression(Previous().Value, Previous().Line);
+
                 if (Match(TokenType.INCREMENT))
                 {
-                    Token operatorToken = Previous();
-                    return new UnaryExpression(operatorToken, varExpr, Previous().Line);
+                    Token op = Previous();
+                    return new UnaryExpression(op, variable, op.Line);
                 }
-                return new VariableExpression(Previous().Value, Previous().Line);
+
+                return variable;
             }
 
             if (Match(TokenType.ABLIKUTOB))
             {
                 Expression expr = ParseExpression();
-                Consume(TokenType.SIRAKUTOB,  MissingToken, ")", "after expression");
+                ReadToken(TokenType.SIRAKUTOB, MissingToken, ")", "after expression");
                 return new GroupingExpression(expr, Previous().Line);
             }
 
             if (Match(TokenType.UNKNOWN))
-            {
                 ThrowError(Peek().Line, General, $"Unknown character '{Previous().Value}'");
-            }
 
-            ThrowError(Peek().Line, General, "Invalid/empty expression.");
+            ThrowError(Peek().Line, General, "Invalid or empty expression.");
             return null;
         }
 
-        #endregion Expression Parsing
+        #endregion
 
         #region Helper Methods
-        private void ValidateProgramStructure()
+        private void ValidateStructure()
         {
-            int sugodIndex = tokens.FindIndex(token => token.Type == TokenType.SUGOD);
-            int katapusanIndex = tokens.FindLastIndex(token => token.Type == TokenType.KATAPUSAN);
+            SkipEmptyLines();
 
-            ConsumeNewlines();
+            int sugodIndex = FindFirstToken(TokenType.SUGOD);
+            int katapusanIndex = FindLastToken(TokenType.KATAPUSAN);
 
+            ValidatePresenceOfProgramBounds(sugodIndex, katapusanIndex);
+            ValidateSingleProgramBounds();
+            ValidateNoCodeOutsideBounds(sugodIndex, katapusanIndex);
+        }
+
+        private int FindFirstToken(TokenType type) =>
+            tokens.FindIndex(token => token.Type == type);
+
+        private int FindLastToken(TokenType type) =>
+            tokens.FindLastIndex(token => token.Type == type);
+
+        private void ValidatePresenceOfProgramBounds(int sugodIndex, int katapusanIndex)
+        {
             if (sugodIndex == -1 || katapusanIndex == -1)
             {
                 string missingToken = sugodIndex == -1 ? "SUGOD" : "KATAPUSAN";
                 ThrowError(Peek().Line, General, $"{missingToken} must exist for the program to run.");
             }
+        }
 
-            if (tokens.Count(token => token.Type == TokenType.SUGOD) > 1 || tokens.Count(token => token.Type == TokenType.KATAPUSAN) > 1)
+        private void ValidateSingleProgramBounds()
+        {
+            int sugodCount = tokens.Count(t => t.Type == TokenType.SUGOD);
+            int katapusanCount = tokens.Count(t => t.Type == TokenType.KATAPUSAN);
+
+            if (sugodCount > 1 || katapusanCount > 1)
             {
-                int duplicateSugodIndex = tokens.FindIndex(sugodIndex + 1, token => token.Type == TokenType.SUGOD);
-                int duplicateKatapusanIndex = tokens.FindIndex(token => token.Type == TokenType.KATAPUSAN);
-                int errorLine = duplicateSugodIndex > -1 ? tokens[duplicateSugodIndex].Line : tokens[duplicateKatapusanIndex].Line;
-                string duplicateToken = duplicateSugodIndex > -1 ? "SUGOD" : "KATAPUSAN";
+                int duplicateIndex = sugodCount > 1
+                    ? tokens.FindIndex(1, t => t.Type == TokenType.SUGOD)
+                    : tokens.FindIndex(1, t => t.Type == TokenType.KATAPUSAN);
+
+                string duplicateToken = sugodCount > 1 ? "SUGOD" : "KATAPUSAN";
+                int errorLine = tokens[duplicateIndex].Line;
+
                 ThrowError(errorLine, General, $"Only one {duplicateToken} should exist.");
             }
+        }
 
-            if (sugodIndex > 0 || katapusanIndex < tokens.Count - 1)
+        private void ValidateNoCodeOutsideBounds(int sugodIndex, int katapusanIndex)
+        {
+            // Before SUGOD
+            if (sugodIndex > 0)
             {
-                if (sugodIndex > 0)
+                var invalidToken = tokens.Take(sugodIndex)
+                    .FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA);
+
+                if (invalidToken != null)
                 {
-                    var outOfBoundsToken = tokens.Take(sugodIndex).FirstOrDefault(token => token.Type != TokenType.STORYA && token.Type != TokenType.SUNODLINYA);
-                    if (outOfBoundsToken != null)
-                    {
-                        ThrowError(outOfBoundsToken.Line, General, $"Invalid code or tokens outside SUGOD.");
-                    }
+                    ThrowError(invalidToken.Line, General, $"Invalid code or tokens outside SUGOD.");
                 }
-                if (katapusanIndex < tokens.Count - 1)
+            }
+
+            // After KATAPUSAN
+            if (katapusanIndex < tokens.Count - 1)
+            {
+                var invalidToken = tokens.Skip(katapusanIndex + 1)
+                    .FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA && t.Type != TokenType.EOF);
+
+                if (invalidToken != null)
                 {
-                    var outOfBoundsToken = tokens.Skip(katapusanIndex + 1).FirstOrDefault(token => token.Type != TokenType.STORYA && token.Type != TokenType.SUNODLINYA && token.Type != TokenType.EOF);
-                    if (outOfBoundsToken != null)
-                    {
-                        ThrowError(outOfBoundsToken.Line, General, $"Invalid code or tokens after KATAPUSAN.");
-                    }
+                    ThrowError(invalidToken.Line, General, $"Invalid code or tokens after KATAPUSAN.");
                 }
             }
         }
-        
+
+
+        // Retrieves the declared type of a variable or throws an error if not found.
         private TokenType GetVariableType(string variableName)
         {
             if (declaredVariables.TryGetValue(variableName, out TokenType type))
             {
                 return type;
             }
+
             ThrowError(Peek().Line, VariableNotDeclared, variableName);
-            return default; 
+            return default; // Unreachable due to ThrowError, but required syntactically
         }
 
+        // Checks if we've reached the end of the token stream.
         private bool IsAtEnd() => Peek().Type == TokenType.EOF;
 
-        private Token Peek() => tokens[current];
+        // Returns the current token without consuming it.
+        private Token Peek() => tokens[pos];
 
-        private Token Previous() => tokens[current - 1];
+        // Returns the previously consumed token.
+        private Token Previous() => tokens[pos - 1];
 
+        // Consumes the current token and moves to the next one.
         private Token Advance()
         {
             if (!IsAtEnd())
-                current++;
+                pos++;
             return Previous();
         }
 
-        private bool Check(TokenType type) => !IsAtEnd() && Peek().Type == type;
+        // Checks if the current token matches the expected type without consuming it.
+        private bool Check(TokenType type) =>
+            !IsAtEnd() && Peek().Type == type;
 
+        // Tries to match the current token with any of the given types.
+        // If a match is found, the token is consumed and true is returned.
         private bool Match(params TokenType[] types)
         {
-            foreach (TokenType type in types)
+            foreach (var type in types)
             {
                 if (Check(type))
                 {
@@ -665,22 +728,28 @@ namespace BisayaC
             }
             return false;
         }
-        
-        private Token Consume(TokenType type, ErrorType errorCode, string expected, string additionalInfo = null)
+
+        // Consumes a token of the expected type or throws an error if it doesn't match.
+        private Token ReadToken(TokenType expectedType, ErrorType errorCode, string expectedDescription, string additionalInfo = null)
         {
-            if (Check(type))
+            if (Check(expectedType))
                 return Advance();
-            ThrowError(Peek().Line, errorCode, expected, additionalInfo);
-            return null;
+
+            ThrowError(Peek().Line, errorCode, expectedDescription, additionalInfo);
+            return null; // Required for compiler; unreachable due to ThrowError.
         }
-        
-        private void ConsumeNewlines()
+
+        // Consumes and discards all newline tokens (SUNODLINYA) in sequence.
+        private void SkipEmptyLines()
         {
             while (Match(TokenType.SUNODLINYA)) { }
         }
 
-        private static bool IsReservedKeyword(string name) => LexerAnalyzer.keywords.ContainsKey(name);
+        // Checks if a name is a reserved keyword.
+        private static bool IsReservedKeyword(string name) =>
+            LexerAnalyzer.keywords.ContainsKey(name);
 
+        // Safely retrieves a statement by index; throws a parser-level error if invalid.
         private Statement Statement(int index)
         {
             try
@@ -693,6 +762,7 @@ namespace BisayaC
                 return null;
             }
         }
+
 
         #endregion Helper Methods
     }

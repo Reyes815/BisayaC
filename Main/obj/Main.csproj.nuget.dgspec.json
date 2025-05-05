@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj": {}
+    "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj": {
+    "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj",
+        "projectUniqueName": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj",
         "projectName": "Main",
-        "projectPath": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj",
-        "packagesPath": "C:\\Users\\Rowen\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\obj\\",
+        "projectPath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj",
+        "packagesPath": "C:\\Users\\Chazz\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Rowen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Chazz\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -42,9 +42,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -60,6 +60,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+              "version": "[9.0.203, 9.0.203]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -68,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

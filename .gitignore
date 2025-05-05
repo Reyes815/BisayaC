@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Main/inputhere.txt
+/Main/mainprogram.cs
+/Main/tr.cs
