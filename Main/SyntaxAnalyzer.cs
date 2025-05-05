@@ -278,7 +278,7 @@ namespace BisayaC
                 if (Check(TokenType.SUNODLINYA))
                 {
                     Advance();
-                    expressions.Add(new LiteralExpression("\\n", Previous().Line));
+                    expressions.Add(new LiteralExpression("\n", Previous().Line));
                     continue;
                 }
 
