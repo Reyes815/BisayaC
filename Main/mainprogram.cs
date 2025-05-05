@@ -48,7 +48,7 @@ namespace BisayaC
 
         private static void CompileAndInterpret()
         {
-            string sourcePath = "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\inputhere.txt";
+            string sourcePath = "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\inputhere.txt";
 
             if (!File.Exists(sourcePath))
             {

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\Main.csproj": {}
+    "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\Main.csproj": {
+    "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\Main.csproj",
+        "projectUniqueName": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj",
         "projectName": "Main",
-        "projectPath": "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\Main.csproj",
-        "packagesPath": "C:\\Users\\Nookie Lian\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Nookie Lian\\RiderProjects\\BisayaC\\Main\\obj\\",
+        "projectPath": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\Main.csproj",
+        "packagesPath": "C:\\Users\\Rowen\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Rowen\\Desktop\\BisayaC\\Main\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Nookie Lian\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Rowen\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

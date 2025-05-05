@@ -9,14 +9,13 @@ namespace BisayaC
         public void DeclareVariable(string name, object value, TokenType type, int lineNumber)
         {
             object typedValue;
-
             try
             {
                 typedValue = type switch
                 {
                     TokenType.NUMERO => Interpreter.ConvertToInt(value, lineNumber), TokenType.TIPIK => Convert.ToSingle(value),
                     TokenType.LETRA => Convert.ToChar(value), TokenType.TINUOD => Convert.ToBoolean(value), 
-                    _ => value 
+                    _ => value
                 };
                 variables[name] = (typedValue, type);
             }
@@ -37,7 +36,7 @@ namespace BisayaC
             {
                 return variable.Value;
             }
-            if (LexicalAnalyzer.LexerAnalyzer.keywords.TryGetValue(name, out var _type))
+            if (LexerAnalyzer.keywords.TryGetValue(name, out var _type))
             {
                 throw new ArgumentException($"Error at line: {lineNumber}. Invalid use of reserved keyword '{name}'.");
             }
@@ -75,6 +74,7 @@ namespace BisayaC
             }
             throw new ArgumentException($"Variable '{name}' is not defined.");
         }
+
         private static bool IsTypeCompatible(object value, TokenType type)
         {
             return type switch
@@ -261,6 +261,7 @@ namespace BisayaC
                     throw new NotImplementedException($"Error at line: {expression.LineNumber}. Evaluation not implemented for expression type {expression.GetType().Name}");
             }
         }
+
         private object EvaluateBinaryExpression(object left, Token operatorToken, object right)
         {
             if (operatorToken.Type == TokenType.SUMPAY)
@@ -388,6 +389,7 @@ namespace BisayaC
             }
             return value;
         }
+
         private static object PerformOperation(object left, object right, string operation, int lineNumber)
         {
             if (left is float leftFloat && right is float rightFloat)
@@ -446,6 +448,7 @@ namespace BisayaC
 
             throw new ArgumentException($"Error at line: {lineNumber}. Invalid operands for operation '{operation}'. Found: '{left}' and '{right}'.");
         }
+
         private void IncrementVariable(Variable variable)
         {
             object value = context.GetVariable(variable.Name, variable.LineNumber);
@@ -515,6 +518,7 @@ namespace BisayaC
             }
             return Convert.ToInt32(value);
         }
+
         private static object ConvertIfString(object value)
         {
             if (value is string stringValue)
@@ -534,6 +538,7 @@ namespace BisayaC
             }
             return value;
         }
+
         public static string ConvertToString(object value)
         {
             return value switch
@@ -544,6 +549,7 @@ namespace BisayaC
                 _ => value.ToString()
             };
         }
+        
         private object GetDefaultValue(TokenType type)
         {
             return type switch
@@ -556,6 +562,7 @@ namespace BisayaC
                 _ => null
             };
         }
+
         private bool IsTruthy(object value)
         {
             if (value is bool b)
