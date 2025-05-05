@@ -1,4 +1,4 @@
-﻿namespace Bisaya__
+﻿namespace BisayaC
 {
     /// <summary>
     /// Entry point for the Bisaya++ Compiler.

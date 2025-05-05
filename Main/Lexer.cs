@@ -1,7 +1,7 @@
-﻿using static Bisaya__.ErrorHandler;
-using static Bisaya__.ErrorHandler.ErrorCode;
+﻿using static BisayaC.ErrorHandler;
+using static BisayaC.ErrorHandler.ErrorCode;
 
-namespace Bisaya__
+namespace BisayaC
 {
     /// <summary>
     /// Enumerates the types of tokens that can be produced.

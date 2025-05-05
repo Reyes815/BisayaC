@@ -1,4 +1,4 @@
-﻿namespace Bisaya__
+﻿namespace BisayaC
 {
     /// <summary>
     /// Interface for all nodes in the abstract syntax tree (AST).

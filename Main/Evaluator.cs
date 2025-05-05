@@ -1,13 +1,9 @@
 ﻿using System.Data;
 
-namespace Bisaya__
+namespace BisayaC
 {
-    /// <summary>
-    /// Maintains variable declarations and values during program execution.
-    /// </summary>
     public class ExecutionContext
     {
-        // Stores variables with their value and declared type.
         private readonly Dictionary<string, (object Value, TokenType Type)> variables = new();
 
         public void DeclareVariable(string name, object value, TokenType type, int lineNumber)

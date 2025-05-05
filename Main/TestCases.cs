@@ -1,4 +1,4 @@
-﻿namespace Bisaya__
+﻿namespace BisayaC
 {
     internal class TestCases
     {
