@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj": {}
+    "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\Main.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj": {
+    "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\Main.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj",
+        "projectUniqueName": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\Main.csproj",
         "projectName": "Main",
-        "projectPath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj",
+        "projectPath": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\Main.csproj",
         "packagesPath": "C:\\Users\\Chazz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\obj\\",
+        "outputPath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaCLone\\Main\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

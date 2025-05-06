@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uPK3eGY39Ng=",
+  "dgSpecHash": "vGiiE1Q1a8Q=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Chazz\\Source\\Repos\\BisayaC\\Main\\Main.csproj",
+  "projectFilePath": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\Main.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chazz\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.203\\microsoft.net.sdk.compilers.toolset.9.0.203.nupkg.sha512"
   ],

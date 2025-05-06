@@ -1,29 +1,25 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\",
+  "WorkspaceRootPath": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\testcase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\testcase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\syntaxanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayaclone\\main\\syntaxanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\syntaxanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\lexicalanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayaclone\\main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\mainprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayaclone\\main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\bisayacevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayaclone\\main\\lexicalanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\lexicalanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayac\\main\\inputhere.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|c:\\users\\chazz\\source\\repos\\bisayaclone\\main\\inputhere.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{AECD073E-65F9-45CD-A51A-92A77554BDB3}|Main\\Main.csproj|solutionrelative:main\\inputhere.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
@@ -34,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,78 +42,61 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TestCase.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\TestCase.cs",
-              "RelativeDocumentMoniker": "Main\\TestCase.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\TestCase.cs",
-              "RelativeToolTip": "Main\\TestCase.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAlwCMAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T21:07:14.927Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "inputhere.txt",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\inputhere.txt",
               "RelativeDocumentMoniker": "Main\\inputhere.txt",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\inputhere.txt",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\inputhere.txt",
               "RelativeToolTip": "Main\\inputhere.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-05-05T20:39:33.232Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T20:39:33.232Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "mainprogram.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\mainprogram.cs",
               "RelativeDocumentMoniker": "Main\\mainprogram.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\mainprogram.cs*",
-              "RelativeToolTip": "Main\\mainprogram.cs*",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\mainprogram.cs",
+              "RelativeToolTip": "Main\\mainprogram.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAgwCMAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T20:39:08.001Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T20:39:08.001Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "LexicalAnalyzer.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\LexicalAnalyzer.cs",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\LexicalAnalyzer.cs",
               "RelativeDocumentMoniker": "Main\\LexicalAnalyzer.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\LexicalAnalyzer.cs",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\LexicalAnalyzer.cs",
               "RelativeToolTip": "Main\\LexicalAnalyzer.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAA9wEQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T19:23:29.246Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T19:23:29.246Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "BisayaCEvaluator.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\BisayaCEvaluator.cs",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\BisayaCEvaluator.cs",
               "RelativeDocumentMoniker": "Main\\BisayaCEvaluator.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\BisayaCEvaluator.cs",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\BisayaCEvaluator.cs",
               "RelativeToolTip": "Main\\BisayaCEvaluator.cs",
               "ViewState": "AgIAAGMAAAAAAAAAAAAzwHEAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T18:47:12.873Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T18:47:12.873Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "SyntaxAnalyzer.cs",
-              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\SyntaxAnalyzer.cs",
+              "DocumentMoniker": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\SyntaxAnalyzer.cs",
               "RelativeDocumentMoniker": "Main\\SyntaxAnalyzer.cs",
-              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaC\\Main\\SyntaxAnalyzer.cs",
+              "ToolTip": "C:\\Users\\Chazz\\source\\repos\\BisayaCLone\\Main\\SyntaxAnalyzer.cs",
               "RelativeToolTip": "Main\\SyntaxAnalyzer.cs",
-              "ViewState": "AgIAACgBAAAAAAAAAAA3wBgBAAA7AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAP4CAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-05T18:43:37.753Z",
               "EditorCaption": ""

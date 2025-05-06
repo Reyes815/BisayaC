@@ -610,72 +610,56 @@ namespace BisayaC
         #region Helper Methods
         private void ValidateStructure()
         {
+
             SkipEmptyLines();
 
-            int sugodIndex = FindFirstToken(TokenType.SUGOD);
-            int katapusanIndex = FindLastToken(TokenType.KATAPUSAN);
+            int sugodIndex = tokens.FindIndex(token => token.Type == TokenType.SUGOD);
+            int katapusanIndex = tokens.FindLastIndex(token => token.Type == TokenType.KATAPUSAN);
 
-            ValidatePresenceOfProgramBounds(sugodIndex, katapusanIndex);
-            ValidateSingleProgramBounds();
+            ValidateBoundaryPresence(sugodIndex, katapusanIndex);
+            ValidateSingleBounds();
             ValidateNoCodeOutsideBounds(sugodIndex, katapusanIndex);
         }
 
-        private int FindFirstToken(TokenType type) =>
-            tokens.FindIndex(token => token.Type == type);
-
-        private int FindLastToken(TokenType type) =>
-            tokens.FindLastIndex(token => token.Type == type);
-
-        private void ValidatePresenceOfProgramBounds(int sugodIndex, int katapusanIndex)
+        public void ValidateBoundaryPresence(int sugodIndex, int katapusanIndex)
         {
             if (sugodIndex == -1 || katapusanIndex == -1)
             {
                 string missingToken = sugodIndex == -1 ? "SUGOD" : "KATAPUSAN";
-                ThrowError(Peek().Line, General, $"{missingToken} must exist for the program to run.");
+                ThrowError(Peek().Line, General, $"{missingToken} is missing");
             }
         }
 
-        private void ValidateSingleProgramBounds()
+        public void ValidateSingleBounds()
         {
-            int sugodCount = tokens.Count(t => t.Type == TokenType.SUGOD);
-            int katapusanCount = tokens.Count(t => t.Type == TokenType.KATAPUSAN);
+            int SugodCount = tokens.Count(t => t.Type == TokenType.SUGOD);
+            int KatapusanCount = tokens.Count(t => t.Type == TokenType.KATAPUSAN);
 
-            if (sugodCount > 1 || katapusanCount > 1)
+            if (SugodCount > 1 || KatapusanCount > 1)
             {
-                int duplicateIndex = sugodCount > 1
-                    ? tokens.FindIndex(1, t => t.Type == TokenType.SUGOD)
-                    : tokens.FindIndex(1, t => t.Type == TokenType.KATAPUSAN);
-
-                string duplicateToken = sugodCount > 1 ? "SUGOD" : "KATAPUSAN";
-                int errorLine = tokens[duplicateIndex].Line;
-
-                ThrowError(errorLine, General, $"Only one {duplicateToken} should exist.");
+                int duplicateIndex = SugodCount > 1 ? tokens.FindIndex(1, t => t.Type == TokenType.SUGOD) :
+                                                      tokens.FindIndex(1, t => t.Type == TokenType.KATAPUSAN);
             }
         }
 
-        private void ValidateNoCodeOutsideBounds(int sugodIndex, int katapusanIndex)
+        public void ValidateNoCodeOutsideBounds(int sugodIndex, int katapusanIndex)
         {
-            // Before SUGOD
             if (sugodIndex > 0)
             {
-                var invalidToken = tokens.Take(sugodIndex)
-                    .FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA);
-
+                var invalidToken = tokens.Take(sugodIndex).FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA);
                 if (invalidToken != null)
                 {
-                    ThrowError(invalidToken.Line, General, $"Invalid code or tokens outside SUGOD.");
+                    ThrowError(Peek().Line, General, "Invalid code or token outside SUGOD");
                 }
             }
 
-            // After KATAPUSAN
-            if (katapusanIndex < tokens.Count - 1)
+            if (katapusanIndex > tokens.Count - 1)
             {
-                var invalidToken = tokens.Skip(katapusanIndex + 1)
-                    .FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA && t.Type != TokenType.EOF);
+                var invalidToken = tokens.Skip(katapusanIndex + 1).FirstOrDefault(t => t.Type != TokenType.STORYA && t.Type != TokenType.SUNODLINYA && t.Type != TokenType.EOF);
 
                 if (invalidToken != null)
                 {
-                    ThrowError(invalidToken.Line, General, $"Invalid code or tokens after KATAPUSAN.");
+                    ThrowError(Peek().Line, General, "Invalid code or token after KATAPUSAN");
                 }
             }
         }
